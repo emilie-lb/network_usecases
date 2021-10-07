@@ -1,3 +1,4 @@
+
 # Network_usecases
 
 # Resources :
@@ -10,9 +11,9 @@
 
 # Install commands :
 
-sudo apt update
-sudo apt upgrade
-sudo apt-get install -y net-tools tcpdump traceroute dnsutils ifupdown
+- sudo apt update   
+- sudo apt upgrade  
+- sudo apt-get install -y net-tools tcpdump traceroute dnsutils ifupdown
 
 # Usefull commands :
 
@@ -31,45 +32,47 @@ sudo apt-get install -y net-tools tcpdump traceroute dnsutils ifupdown
 
 # Part 1: Simple network with virtualBox :
 
-- Create three vms :
-- Install net-tools, tcpdump, traceroute, dnsutils and ifupdown.
-- All internal network cards should be configured with static address, and the address 10.0.1.0/24
+> - Create three vms :
+> - Install net-tools, tcpdump, traceroute, dnsutils and ifupdown.
+> - All internal network cards should be configured with static address, and the address 10.0.1.0/24
 
-## Bastion/ Routeur :
+`
+
+# Bastion/ Routeur :
 
 ## Network card connected in nat :
 
 - Network card in NAT : configuration/réseau/NAT
 
-etc/network/interfaces
-  auto lo
+- `etc/network/interfaces
+  auto lo  
   auto epn0s3
-  iface enpos3 inet dhcp
+  iface enpos3 inet dhcp`
 
 ## Network card internal network :
 - Network card internal network : 
 Configuration/réseau/internal network
 
-/etc/network/interfaces
+`/etc/network/interfaces
   auto lo
   iface enp0s8 inet static
     address 10.0.1.0.1
     netmask 255.255.255.0
     network 10.0.1.0
-    broadcast 10.0.1.0.1
+    broadcast 10.0.1.0.1`
 
 
 ## Alice et Bob le client :
 
 - Should be able to ping all vms and internet
 - Network card internal network : configuration/réseau/internal network
-/etc/network/interfaces
+``/etc/network/interfaces
   auto lo
   iface enp0s8 inet static
     address 10.0.1.0.2
     netmask 255.255.255.0
     network 10.0.1.0
-    broadcast 10.0.1.0.1
+    broadcast 10.0.1.0.1``
 
 
 
@@ -100,32 +103,32 @@ Configuration/réseau/internal network
  
     ## Modifier adresse statique en 198 :
     
-      iface enp0s8 inet static
+     `` iface enp0s8 inet static
         address 198.168.2
         netmask 255.255.255.0
         network 198.168.42.0
-        broadcast 192.168.42.255
+        broadcast 192.168.42.255``
 
 ## Renommer les machines :
-    - sudo hostnamectl set-hostname <name>
-    - sudo vi /etc/hosts' => 127.0.1.1 <name>
+   `` - sudo hostnamectl set-hostname <name>
+    - sudo vi /etc/hosts' => 127.0.1.1 <name>``
 
 ## coté bastion :
 
   - Décommenter la ligne net.ipv4.ip_forward=1 dans etc/sysctl.conf
-  - iptables -t nat -A POSTROUTING -o enp0s3 -j MASQUERADE pour masquer toutes les actions avant enp0s3.
-  - sudo apt-get install iptables-persistent lib pour rendre cmd iptables persistant.
+  - ``iptables -t nat -A POSTROUTING -o enp0s3 -j MASQUERADE`` pour masquer toutes les actions avant enp0s3.
+  - ``sudo apt-get install iptables-persistent lib`` pour rendre cmd iptables persistant.
   - Vérifier les rules dans /etc/iptables/rules.V4
-  - Si changement des rules : faire une sauvegarde avec sudo systemctl -p
+  - Si changement des rules : faire une sauvegarde avec ``sudo systemctl -p``
 
   ## Configurer DHCP:
   
   - fichier /etc/dhcp/dhcpd.conf
-        subnet 192.168.42.0 netmask 255.255.255.0{
+        ``subnet 192.168.42.0 netmask 255.255.255.0{
         range 192.168.42.10 192.168.42.254;
         option routers 192.168.42.1;
         option domain-name-servers 8.8.8.8, 8.8.4.4;
-  }
+  }``
   
    ## Ajouter les hosts :
       - host Alice{
@@ -185,9 +188,9 @@ Configuration/réseau/internal network
 ## Alice et Bob :
 
    - /etc/systemd/resolved.conf:
-        'DNS=<IP bastion>'
-        'DNSStublisterner=no'
-    - sudo systemctl restart systemd-resolved
+	   ``DNS=<IP bastion>``
+        ``DNSStublisterner=no``
+   - sudo systemctl restart systemd-resolved
     - sudo systemctl status systemd-resolved
     - sudo systemctl disable systemd-resolved
     - sudo rm /etc/resolv.conf
