@@ -1,6 +1,6 @@
 # Network_usecases
 
-# Resources
+# Resources :
 
 - https://openclassrooms.com/fr/courses/857447-apprenez-le-fonctionnement-des-reseaux-tcp-ip/851033-la-creation-dinternet-le-modele-osi#/id/r-2150182
 - https://monoinfinito.wordpress.com/series/setting-up-a-linux-gatewayrouter-a-guide-for-non-network-admins/
@@ -14,7 +14,7 @@ sudo apt update
 sudo apt upgrade
 sudo apt-get install -y net-tools tcpdump traceroute dnsutils ifupdown
 
-# Usefull commands
+# Usefull commands :
 
  - `tcpdump -i enp0s3` listen on interface enp0s3 and dump the output.
  - `netstat -r` show all kernel route table
@@ -22,14 +22,14 @@ sudo apt-get install -y net-tools tcpdump traceroute dnsutils ifupdown
  - `iptables [-S|-L]` show OS/network routing rules.
  - `ip a` show current network interface data.
 
-# Usefull file
+# Usefull file :
 
  - `/etc/sysctl.conf`
  - `/proc/sys/net/ipv4/ip_forward`
  - `/etc/network/interfaces`
 
 
-# Part 1: Simple network with virtualBox:
+# Part 1: Simple network with virtualBox :
 
 - Create three vms :
 - Install net-tools, tcpdump, traceroute, dnsutils and ifupdown.
@@ -75,7 +75,7 @@ Network card internal network : configuration/réseau/internal network
 
 # Part 2: DHCP and DNS
 
-## Bastion should be a DNS server and a DHCP server
+## Bastion should be a DNS server and a DHCP server :
 
     - isc-dhcp-server service installed, configured and launched
     - bind9 service installed configured and launched (dns service).
@@ -142,16 +142,16 @@ Network card internal network : configuration/réseau/internal network
    
     'sudo systemctl restart isc-dhcp-server'
     
-   ## ça tourne ?
+   ## Vérifier si ça tourne :
    
     'sudo systemctl status isc-dhcp-server'
 
 
-   ## Configurer serveur DNS:
+   ## Configurer serveur DNS :
    
     installer bind9 'sudo apt-get install bind9'
     
-   ## Pour rediriger la requête vers google:
+   ## Pour rediriger la requête vers google :
    
     etc/bind/named.conf.options
         forwarders {
@@ -165,7 +165,7 @@ Network card internal network : configuration/réseau/internal network
         'DNSStublisterner=no'
     - 'sudo systemctl restart systemd-resolved'
     
-   ## Les modifs ont elles été prises en compte ?
+   ## Les modifs ont elles été prises en compte :
    
     - 'sudo systemctl status systemd-resolved'
     - 'sudo systemctl disable systemd-resolved'
@@ -177,12 +177,12 @@ Network card internal network : configuration/réseau/internal network
     dans /etc/dhcp/dhpcd.conf:
     reboot
     
-   ## Changer le nom de domaine:
+   ## Changer le nom de domaine :
    
       'option domain-name-server <IP bastion>'
     - 'sudo systemctl restart isc-dhcp-restart'
 
-## Alice` et `Bob`
+## Alice et Bob :
 
     /etc/systemd/resolved.conf:
         'DNS=<IP bastion>'
@@ -194,12 +194,12 @@ Network card internal network : configuration/réseau/internal network
     -'sudo systemctl stop systemd-resolved' reboot
 
 
-  # PASSER ALICE ET BOB EN DHCP 
+  # PASSER ALICE ET BOB EN DHCP :
   
     /etc/network/interfaces
 
 
-  # Comment je sais que le bon DNS est utilisé ?
+  # Comment je sais que le bon DNS est utilisé :
   
    'nslookup google.com"
   - Pour Ubuntu, le serveur par défaut est 127.0.0.53:53 (aver 53 le port DNS par défaut)
