@@ -39,7 +39,7 @@ sudo apt-get install -y net-tools tcpdump traceroute dnsutils ifupdown
 
 ## Network card connected in nat :
 
-Network card in NAT : configuration/réseau/NAT
+- Network card in NAT : configuration/réseau/NAT
 
 etc/network/interfaces
   auto lo
@@ -47,7 +47,7 @@ etc/network/interfaces
   iface enpos3 inet dhcp
 
 ## Network card internal network :
-Network card internal network : 
+- Network card internal network : 
 Configuration/réseau/internal network
 
 /etc/network/interfaces
@@ -61,8 +61,8 @@ Configuration/réseau/internal network
 
 ## Alice et Bob le client :
 
-Should be able to ping all vms and internet
-Network card internal network : configuration/réseau/internal network
+- Should be able to ping all vms and internet
+- Network card internal network : configuration/réseau/internal network
 /etc/network/interfaces
   auto lo
   iface enp0s8 inet static
@@ -107,20 +107,20 @@ Network card internal network : configuration/réseau/internal network
         broadcast 192.168.42.255
 
 ## Renommer les machines :
-    - 'sudo hostnamectl set-hostname <name>'
-    - 'sudo vi /etc/hosts' => 127.0.1.1 <name>
+    - sudo hostnamectl set-hostname <name>
+    - sudo vi /etc/hosts' => 127.0.1.1 <name>
 
 ## coté bastion :
 
   - Décommenter la ligne net.ipv4.ip_forward=1 dans etc/sysctl.conf
-  - 'iptables -t nat -A POSTROUTING -o enp0s3 -j MASQUERADE' pour masquer toutes les actions avant enp0s3.
-  - 'sudo apt-get install iptables-persistent' lib pour rendre cmd iptables persistant.
+  - iptables -t nat -A POSTROUTING -o enp0s3 -j MASQUERADE pour masquer toutes les actions avant enp0s3.
+  - sudo apt-get install iptables-persistent lib pour rendre cmd iptables persistant.
   - Vérifier les rules dans /etc/iptables/rules.V4
-    si changement des rules => faire sauvegarde avec 'sudo systemctl -p'
+  - Si changement des rules : faire une sauvegarde avec sudo systemctl -p
 
   ## Configurer DHCP:
   
-  fichier `/etc/dhcp/dhcpd.conf
+  - fichier /etc/dhcp/dhcpd.conf
         subnet 192.168.42.0 netmask 255.255.255.0{
         range 192.168.42.10 192.168.42.254;
         option routers 192.168.42.1;
@@ -128,32 +128,32 @@ Network card internal network : configuration/réseau/internal network
   }
   
    ## Ajouter les hosts :
-      host Alice{
+      - host Alice{
         hardware ethernet <MAC>;
         fixed-address 192.168.42.2
       }
 
    ## Ajouter enp0s8 comme dhcp serveur :
    
-    dans '/etc/default/isc-dhcp-server`
+    - dans '/etc/default/isc-dhcp-server`
         INTERFACESv4="enp0s8"
 
    ## Restart avec les bonnes modifications :
    
-    'sudo systemctl restart isc-dhcp-server'
+    - sudo systemctl restart isc-dhcp-server
     
    ## Vérifier si ça tourne :
    
-    'sudo systemctl status isc-dhcp-server'
+    - sudo systemctl status isc-dhcp-server
 
 
    ## Configurer serveur DNS :
    
-    installer bind9 'sudo apt-get install bind9'
+    - installer bind9 'sudo apt-get install bind9'
     
    ## Pour rediriger la requête vers google :
    
-    etc/bind/named.conf.options
+    - etc/bind/named.conf.options
         forwarders {
           8.8.8.8;
           8.8.4.4;
@@ -161,47 +161,47 @@ Network card internal network : configuration/réseau/internal network
           
    ## Désactiver le DNS par défaut d'Ubuntu :
    
-    dans le fichier etc/systemd/resolved.conf:
+    - dans le fichier etc/systemd/resolved.conf
         'DNSStublisterner=no'
-    - 'sudo systemctl restart systemd-resolved'
+    - sudo systemctl restart systemd-resolved
     
    ## Les modifs ont elles été prises en compte :
    
-    - 'sudo systemctl status systemd-resolved'
-    - 'sudo systemctl disable systemd-resolved'
+    - sudo systemctl status systemd-resolved
+    - sudo systemctl disable systemd-resolved
     
    ## Supprimer fichier simlink :
    
-    faire 'sudo rm /etc/resolv.conf' (pour supprimer fichier relié au simlink)
-    faire 'sudo systemctl stop systemd-resolved'
+    - faire sudo rm /etc/resolv.conf
+    - faire sudo systemctl stop systemd-resolved
     dans /etc/dhcp/dhpcd.conf:
     reboot
     
    ## Changer le nom de domaine :
    
-      'option domain-name-server <IP bastion>'
-    - 'sudo systemctl restart isc-dhcp-restart'
+      - option domain-name-server <IP bastion>
+      - sudo systemctl restart isc-dhcp-restart
 
 ## Alice et Bob :
 
-    /etc/systemd/resolved.conf:
+   - /etc/systemd/resolved.conf:
         'DNS=<IP bastion>'
         'DNSStublisterner=no'
-    -'sudo systemctl restart systemd-resolved'
-    -'sudo systemctl status systemd-resolved'
-    -'sudo systemctl disable systemd-resolved'
-    -'sudo rm /etc/resolv.conf'
-    -'sudo systemctl stop systemd-resolved' reboot
+    - sudo systemctl restart systemd-resolved
+    - sudo systemctl status systemd-resolved
+    - sudo systemctl disable systemd-resolved
+    - sudo rm /etc/resolv.conf
+    - sudo systemctl stop systemd-resolved' reboot
 
 
   # PASSER ALICE ET BOB EN DHCP :
   
-    /etc/network/interfaces
+    - /etc/network/interfaces
 
 
   # Comment je sais que le bon DNS est utilisé :
   
-   'nslookup google.com"
+  - nslookup google.com
   - Pour Ubuntu, le serveur par défaut est 127.0.0.53:53 (aver 53 le port DNS par défaut)
-  - Pour forcer requête à passer par un serveur DNS en particulier (voir si ça marche) 'nslookup google.com <ip serveur DNS>'
+  - Pour forcer requête à passer par un serveur DNS en particulier (voir si ça marche) 'nslookup google.com <ip serveur DNS>
  
