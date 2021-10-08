@@ -103,11 +103,11 @@ Configuration/réseau/internal network
  
     ## Modifier adresse statique en 198 :
     
-     `` iface enp0s8 inet static
-        address 198.168.2
-        netmask 255.255.255.0
-        network 198.168.42.0
-        broadcast 192.168.42.255``
+     `` iface enp0s8 inet dhcp
+        #address 198.168.2
+        #netmask 255.255.255.0
+        #network 198.168.42.0
+        #broadcast 192.168.42.255``
 
 ## Renommer les machines :
    `` - sudo hostnamectl set-hostname <name>
